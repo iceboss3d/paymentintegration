@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Donate";
+    var error = ViewData["error"] as string;
+    DonateViewModel donate = new DonateViewModel();
+}
+
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card" style="width: 24rem;">
+        <div class="card-body">
+            <h3 class="card-title text-center">Donate</h3>
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-danger">@error</div>
+            }
+            <form method="post" asp-controller="Donate" asp-action="Index">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" asp-for=@donate.Name name="name" id="name" required/>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" asp-for=@donate.Email name="email" id="email" required/>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" class="form-control" asp-for=@donate.Amount name="amount" id="amount" required/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Donate</button>
+            </form>
+        </div>
+    </div>
+</div>
