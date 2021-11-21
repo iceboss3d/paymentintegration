@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PaymentIntegration.Models;
+using PaymentIntegration.Models.Domain;
 
-namespace PaymentIntegration.Repository
+namespace PaymentIntegration.Data.Contexts
 {
     public class AppDbContext : DbContext
     {
@@ -10,6 +10,6 @@ namespace PaymentIntegration.Repository
 
         }
 
-        public DbSet<TransactionModel> Transactions { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }

@@ -1,27 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using PaymentIntegration.Models;
-using PaymentIntegration.Repository;
-using PayStack.Net;
+using PaymentIntegration.Core.Services.Abstractions;
+using PaymentIntegration.Models.ViewModels;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PaymentIntegration.Controllers
 {
     public class DonateController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly AppDbContext _context;
-        private readonly string token;
+        private readonly IDonateService _donateService;
 
-        private PayStackApi Paystack { get; set; }
-        public DonateController(IConfiguration configuration, AppDbContext context)
+        public DonateController(IDonateService donateService)
         {
-            _configuration = configuration;
-            _context = context;
-            token = _configuration["Payment:PaystackSK"];
-            Paystack = new PayStackApi(token);
+            _donateService = donateService;
         }
 
         [HttpGet]
@@ -33,37 +24,22 @@ namespace PaymentIntegration.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DonateViewModel donate)
         {
-            TransactionInitializeRequest request = new()
+            try
             {
-                AmountInKobo = donate.Amount * 100,
-                Email = donate.Email,
-                Reference = Generate().ToString(),
-                Currency = "NGN",
-                CallbackUrl = "http://localhost:36222/donate/verify"
-            };
-
-            TransactionInitializeResponse response = Paystack.Transactions.Initialize(request);
-            if (response.Status)
-            {
-                var transaction = new TransactionModel()
-                {
-                    Amount = donate.Amount,
-                    Email = donate.Email,
-                    TrxRef = request.Reference,
-                    Name = donate.Name,
-                };
-                await _context.Transactions.AddAsync(transaction);
-                await _context.SaveChangesAsync();
-                return Redirect(response.Data.AuthorizationUrl);
+                var result = await _donateService.Donate(donate);
+                return Redirect(result);
             }
-            ViewData["error"] = response.Message;
-            return View();
+            catch (Exception ex)
+            {
+                ViewData["error"] = ex.Message;
+                return View();
+            }
         }
 
         [HttpGet]
-        public IActionResult Donations()
+        public async Task<IActionResult> Donations()
         {
-            var transactions = _context.Transactions.Where(x => x.Status == true).ToList();
+            var transactions = await _donateService.GetDonations();
             ViewData["transactions"] = transactions;
             return View();
         }
@@ -71,26 +47,17 @@ namespace PaymentIntegration.Controllers
         [HttpGet]
         public async Task<IActionResult> Verify(string reference)
         {
-            TransactionVerifyResponse response = Paystack.Transactions.Verify(reference);
-            if (response.Data.Status == "success")
+            try
             {
-                var transaction = _context.Transactions.Where(x => x.TrxRef == reference).FirstOrDefault();
-                if (transaction != null)
-                {
-                    transaction.Status = true;
-                    _context.Transactions.Update(transaction);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Donations");
-                }
+                await _donateService.VerifyDonation(reference);
+                return RedirectToAction("Donations");
             }
-            ViewData["error"] = response.Data.GatewayResponse;
-            return RedirectToAction("Index");
-        }
+            catch (Exception ex)
+            {
+                ViewData["error"] = ex.Message;
+                return RedirectToAction("Index");
+            }
 
-        public static int Generate()
-        {
-            Random rand = new Random((int)DateTime.Now.Ticks);
-            return rand.Next(100000000, 999999999);
         }
     }
 }

@@ -2,18 +2,16 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PaymentIntegration.Repository;
+using PaymentIntegration.Data.Contexts;
 
-namespace PaymentIntegration.Migrations
+namespace PaymentIntegration.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211028060530_transaction-model-updated")]
-    partial class transactionmodelupdated
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +19,7 @@ namespace PaymentIntegration.Migrations
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("PaymentIntegration.Models.TransactionModel", b =>
+            modelBuilder.Entity("PaymentIntegration.Models.Domain.Transaction", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");

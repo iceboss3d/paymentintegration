@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PaymentIntegration.Models
+namespace PaymentIntegration.Models.Domain
 {
-    public class TransactionModel
+    public class Transaction
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Name { get; set; }

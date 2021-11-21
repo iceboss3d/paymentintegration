@@ -1,4 +1,4 @@
-﻿namespace PaymentIntegration.Models
+﻿namespace PaymentIntegration.Models.ViewModels
 {
     public class DonateViewModel
     {

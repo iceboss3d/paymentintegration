@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PaymentIntegration.Repository;
+using PaymentIntegration.Data.Contexts;
 
-namespace PaymentIntegration.Migrations
+namespace PaymentIntegration.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211028052848_initial_migration")]
+    [Migration("20211121081158_initial_migration")]
     partial class initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,7 +21,7 @@ namespace PaymentIntegration.Migrations
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("PaymentIntegration.Models.TransactionModel", b =>
+            modelBuilder.Entity("PaymentIntegration.Models.Domain.Transaction", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -37,6 +37,9 @@ namespace PaymentIntegration.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("TrxRef")
                         .HasColumnType("text");

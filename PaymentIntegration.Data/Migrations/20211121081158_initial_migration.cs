@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace PaymentIntegration.Migrations
+namespace PaymentIntegration.Data.Migrations
 {
     public partial class initial_migration : Migration
     {
@@ -16,6 +16,7 @@ namespace PaymentIntegration.Migrations
                     Amount = table.Column<int>(type: "integer", nullable: false),
                     TrxRef = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>

@@ -5,7 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PaymentIntegration.Repository;
+using PaymentIntegration.Core.Services.Abstractions;
+using PaymentIntegration.Core.Services.Implementations;
+using PaymentIntegration.Data.Contexts;
+using PaymentIntegration.Data.Repositories.Abstractions;
+using PaymentIntegration.Data.Repositories.Implementation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +32,9 @@ namespace PaymentIntegration
             services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(Configuration["ConnectionStrings:default"]));
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IDonateService, DonateService>();
+            services.AddScoped<IPaymentService, PaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
